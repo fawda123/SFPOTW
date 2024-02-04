@@ -1,0 +1,170 @@
+---
+title: "San Francisco Estuary POTW Data"
+output: 
+  flexdashboard::flex_dashboard:
+    social: menu
+    source_code: "https://github.com/fawda123/SFPOTW"
+    logo: www/sfeilogo.png
+runtime: shiny
+css: styles.css
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+# libraries
+library(flexdashboard)
+library(shiny)
+library(dplyr)
+
+# load('data/epcdata.RData')
+load('data/loads.RData')
+
+# # minor theme tweaks
+# pthm <- ggplot2::theme(
+#     axis.text.x = ggplot2::element_text(size = 11, angle = 45, hjust = 1),
+#     legend.text = ggplot2::element_text(size = 12), 
+#     axis.title.y = ggplot2::element_text(size = 12),
+#     legend.position = 'top',
+#     # panel.grid.minor=element_blank(),
+#     # panel.grid.major=element_blank(),
+#     panel.background = ggplot2::element_rect(fill = '#ECECEC')
+#     ) 
+
+param <- sort(unique(loads$param))
+potw <- sort(unique(loads$POTW))
+subm <- sort(unique(loads$sub_name))
+```
+
+```{r reactives}
+# potw subset data
+potwseldat <- reactive({
+  
+  # inputs
+  potwsel1 <- input$potwsel1
+  paramsel1 <- input$paramsel1
+  
+  out <- subset(loads, POTW == potwsel1 & param == paramsel1)
+  
+  return(out)
+  
+})
+
+# potw plot
+potwplo <- reactive({
+  
+  # inputs
+  potwseldat <- potwseldat()
+  
+  req(potwseldat)
+  
+  # create plot
+  p <- plotly::plot_ly(potwseldat, x = ~date, y = ~mag, type = 'scatter', mode = 'lines+markers',
+                       marker = list(color = 'rgb(205, 12, 24)'), 
+                       line = list(color = 'rgb(205, 12, 24)')) %>%
+    plotly::layout(xaxis = list(title = NA), yaxis = list(title = 'Magnitude'))
+
+  # print
+  print(p)
+
+})
+
+
+# submbayment subset data
+submseldat <- reactive({
+  
+  # inputs
+  submsel1 <- input$submsel1
+  potwsel2 <- input$potwsel2
+  paramsel2 <- input$paramsel2
+  
+  validate(
+    need(potwsel2, 'Need at least one POTW'),
+  )
+  
+  out <- subset(loads, sub_name == submsel1 & param == paramsel2 & POTW %in% potwsel2)
+  out <- summarise(out, 
+                   mag = sum(mag, na.rm = T), 
+                   .by = c('month', 'year', 'date', 'param'))
+  
+  return(out)
+  
+})
+
+submplot <- reactive({
+  
+  # inputs
+  submseldat <- submseldat()
+  
+  req(submseldat)
+  
+  # create plot
+  p <- plotly::plot_ly(submseldat, x = ~date, y = ~mag, type = 'scatter', mode = 'lines+markers',
+                       marker = list(color = 'rgb(205, 12, 24)'), 
+                       line = list(color = 'rgb(205, 12, 24)')) %>%
+    plotly::layout(xaxis = list(title = NA), yaxis = list(title = 'Magnitude'))
+
+  # print
+  print(p)
+
+})
+```
+
+
+BY POTW
+===========================================================
+
+Column 
+-----------------------------------------------------------------------
+
+### View results
+
+```{r}
+output$potwplo <- plotly::renderPlotly(potwplo())
+fillCol(flex = c(NA, 1),
+  column(12, 
+    column(4, tags$div(title = "Select the POTW of interest", 
+      selectInput("potwsel1", "POTW", choices = potw, width = '100%'))
+    ),
+    column(4, tags$div(title = "Select the parameter of interest", 
+      selectInput("paramsel1", "Parameter", choices = param, width = '100%'))
+    )
+  ),
+  plotly::plotlyOutput("potwplo")
+)
+```
+
+BY SUBEMBAYMENT
+===========================================================
+
+Column
+-------------------------------------
+
+### View results
+
+```{r}
+output$submplot <- plotly::renderPlotly(submplot())
+fillCol(flex = c(NA, 1), 
+  column(12, 
+    column(4, tags$div(title = "Select the sub-embayment of interest, POTW selection will be filtered accordingly", 
+      selectInput("submsel1", "Sub-embayment", choices = subm, width = '100%'))
+    ),
+    column(4, renderUI({
+      
+           # input
+           submsel1 <- input$submsel1
+           tosel <- sort(unique(subset(loads, sub_name == submsel1)$POTW))
+           
+           tags$div(title = "Select the POTWs of interest, remove a POTW by clicking and hitting backspace",
+              selectInput("potwsel2", "POTW", choices = tosel, width = '100%', multiple = T, selected = tosel)
+           )
+           
+         })),
+    column(4, tags$div(title = "Select a paramater of interest", 
+      selectInput("paramsel2", "Parameter", choices = param, width = '100%'))
+    )
+  ),
+  plotly::plotlyOutput("submplot")
+)
+```
+
