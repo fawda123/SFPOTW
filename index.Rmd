@@ -60,8 +60,8 @@ potwplo <- reactive({
   
   # create plot
   p <- plotly::plot_ly(potwseldat, x = ~date, y = ~mag, type = 'scatter', mode = 'lines+markers',
-                       marker = list(color = 'rgb(205, 12, 24)'), 
-                       line = list(color = 'rgb(205, 12, 24)')) %>%
+                       marker = list(color = 'rgb(0, 174, 239)'), 
+                       line = list(color = 'rgb(0, 174, 239)')) %>%
     plotly::layout(xaxis = list(title = NA), yaxis = list(title = 'Magnitude'))
 
   # print
@@ -100,8 +100,8 @@ submplot <- reactive({
   
   # create plot
   p <- plotly::plot_ly(submseldat, x = ~date, y = ~mag, type = 'scatter', mode = 'lines+markers',
-                       marker = list(color = 'rgb(205, 12, 24)'), 
-                       line = list(color = 'rgb(205, 12, 24)')) %>%
+                       marker = list(color = 'rgb(0, 174, 239)'), 
+                       line = list(color = 'rgb(0, 174, 239')) %>%
     plotly::layout(xaxis = list(title = NA), yaxis = list(title = 'Magnitude'))
 
   # print
