@@ -17,23 +17,16 @@ library(flexdashboard)
 library(shiny)
 library(dplyr)
 
-# load('data/epcdata.RData')
-load('data/loads.RData')
+source('R/funcs.R')
 
-# # minor theme tweaks
-# pthm <- ggplot2::theme(
-#     axis.text.x = ggplot2::element_text(size = 11, angle = 45, hjust = 1),
-#     legend.text = ggplot2::element_text(size = 12), 
-#     axis.title.y = ggplot2::element_text(size = 12),
-#     legend.position = 'top',
-#     # panel.grid.minor=element_blank(),
-#     # panel.grid.major=element_blank(),
-#     panel.background = ggplot2::element_rect(fill = '#ECECEC')
-#     ) 
+load('data/loads.RData')
 
 param <- sort(unique(loads$param))
 potw <- sort(unique(loads$POTW))
 subm <- sort(unique(loads$sub_name))
+
+# placeholder vector for monthly selection
+mos <- seq.Date(as.Date('2022-01-01'), as.Date('2022-12-31'), by = 'month')
 ```
 
 ```{r reactives}
@@ -55,20 +48,12 @@ potwplo <- reactive({
   
   # inputs
   potwseldat <- potwseldat()
-  
-  req(potwseldat)
-  
-  # create plot
-  p <- plotly::plot_ly(potwseldat, x = ~date, y = ~mag, type = 'scatter', mode = 'lines+markers',
-                       marker = list(color = 'rgb(0, 174, 239)'), 
-                       line = list(color = 'rgb(0, 174, 239)')) %>%
-    plotly::layout(xaxis = list(title = NA), yaxis = list(title = 'Magnitude'))
+  sumsel1 <- as.logical(input$sumsel1)
+  yearsel1 <- input$yearsel1
 
-  # print
-  print(p)
+  plo_fun(potwseldat, sumsel1, yearsel1)  
 
 })
-
 
 # submbayment subset data
 submseldat <- reactive({
@@ -95,18 +80,11 @@ submplot <- reactive({
   
   # inputs
   submseldat <- submseldat()
+  sumsel2 <- as.logical(input$sumsel2)
+  yearsel2 <- input$yearsel2
   
-  req(submseldat)
+  plo_fun(submseldat, sumsel2, yearsel2)
   
-  # create plot
-  p <- plotly::plot_ly(submseldat, x = ~date, y = ~mag, type = 'scatter', mode = 'lines+markers',
-                       marker = list(color = 'rgb(0, 174, 239)'), 
-                       line = list(color = 'rgb(0, 174, 239')) %>%
-    plotly::layout(xaxis = list(title = NA), yaxis = list(title = 'Magnitude'))
-
-  # print
-  print(p)
-
 })
 ```
 
@@ -121,13 +99,29 @@ Column
 
 ```{r}
 output$potwplo <- plotly::renderPlotly(potwplo())
-fillCol(flex = c(NA, 1),
+fillCol(flex = c(NA, NA, 1),
   column(12, 
     column(4, tags$div(title = "Select the POTW of interest", 
       selectInput("potwsel1", "POTW", choices = potw, width = '100%'))
     ),
     column(4, tags$div(title = "Select the parameter of interest", 
       selectInput("paramsel1", "Parameter", choices = param, width = '100%'))
+    )
+  ),
+  column(12,
+    column(2, tags$div(title = "Select yes/no to summarise data annually"), 
+      selectInput("sumsel1", "Summarise annually?", choices = c('Yes' = T, 'No' = F), selected = F, width = '100%')
+    ), 
+    column(6, renderUI({
+      
+      # input
+      sumsel1 <- as.logical(input$sumsel1)
+      if(sumsel1){
+        tags$div(title = "Select the annual range of interest", 
+          sliderInput("yearsel1", "Month range", min = mos[1], max = mos[12], value = range(mos), timeFormat = '%b', width = '100%'))
+      }
+      
+      })
     )
   ),
   plotly::plotlyOutput("potwplo")
@@ -144,7 +138,7 @@ Column
 
 ```{r}
 output$submplot <- plotly::renderPlotly(submplot())
-fillCol(flex = c(NA, 1), 
+fillCol(flex = c(NA, NA, 1), 
   column(12, 
     column(4, tags$div(title = "Select the sub-embayment of interest, POTW selection will be filtered accordingly", 
       selectInput("submsel1", "Sub-embayment", choices = subm, width = '100%'))
@@ -162,6 +156,22 @@ fillCol(flex = c(NA, 1),
          })),
     column(4, tags$div(title = "Select a paramater of interest", 
       selectInput("paramsel2", "Parameter", choices = param, width = '100%'))
+    )
+  ),
+  column(12,
+    column(2, tags$div(title = "Select yes/no to summarise data annually"), 
+      selectInput("sumsel2", "Summarise annually?", choices = c('Yes' = T, 'No' = F), selected = F, width = '100%')
+    ), 
+    column(6, renderUI({
+      
+      # input
+      sumsel2 <- as.logical(input$sumsel2)
+      if(sumsel2){
+        tags$div(title = "Select the annual range of interest", 
+          sliderInput("yearsel2", "Month range", min = mos[1], max = mos[12], value = range(mos), timeFormat = '%b', width = '100%'))
+      }
+      
+      })
     )
   ),
   plotly::plotlyOutput("submplot")
