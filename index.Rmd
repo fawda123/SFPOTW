@@ -89,6 +89,34 @@ submplot <- reactive({
 })
 ```
 
+OVERVIEW
+===========================================================
+
+Column {.tabset .tabset-fade data-width=650}
+-----------------------------------------------------------------------
+
+<div class = "row">
+<div class = "col-md-2"></div>
+<div class = "col-md-8">
+
+#### WELCOME TO THE POTW DASHBOARD
+
+This dashboard provides a quick summary of load estimates for publicly-owned treatment works (POTWs) that discharge to the San Francisco Estuary.  The dashboard is organized into two main sections:
+
+1) [__BY POTW__](#by-potw): View results for individual POTWs.  This page shows time series of monthly load estimates for each POTW.  The user can select the POTW and parameter of interest, and choose to summarize data annually.  The annual summaries show the average loads (+/-95% confidence interval) for the selected monthly range for each year. The plot will update based on the user's selection.
+1) [__BY SUBEMBAYMENT__](#by-subembayment): View results for all POTWs that discharge each subembayment.  This page shows time series of monthly load estimates for each subembayment.  The user can select the subembayment, POTWs within the subembayment, and parameter of interest, and choose to summarize data annually.  The annual summaries show the average loads (+/-95% confidence interval) for the selected monthly range for each year. One to all of the POTWs that drain to each subembayment can be selected. The plot will update based on the user's selection.
+
+All of the plots are interactive and can be zoomed and panned.  The data used to generate the plots can be downloaded by clicking the "Download" button in the upper right corner of each plot.
+
+#### Website information
+
+Questions and comments about the dashboard can be sent to [David Senn](mailto:davids@sfei.org) or [Marcus Beck](mailto:mbeck@tbep.org). The website source content can be viewed on [Github](https://github.com/fawda123/SFPOTW).
+
+<a rel='license' href='http://creativecommons.org/licenses/by/4.0/'><img alt='Creative Commons License' style='border-width:0' src='https://i.creativecommons.org/l/by/4.0/88x31.png' /></a>&nbsp;&nbsp;This website is licensed under a <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'>Creative Commons Attribution 4.0 International License</a>.
+
+</div>
+<div class = "col-md-2"></div>
+</div>
 
 BY POTW
 ===========================================================
