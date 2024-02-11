@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
 # libraries
 library(flexdashboard)
+library(shinyWidgets)
 library(shiny)
 library(dplyr)
 
@@ -26,7 +27,7 @@ potw <- sort(unique(loads$POTW))
 subm <- sort(unique(loads$sub_name))
 
 # placeholder vector for monthly selection
-mos <- seq.Date(as.Date('2022-01-01'), as.Date('2022-12-31'), by = 'month')
+mos <- c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
 ```
 
 ```{r reactives}
@@ -118,7 +119,7 @@ fillCol(flex = c(NA, NA, 1),
       sumsel1 <- as.logical(input$sumsel1)
       if(sumsel1){
         tags$div(title = "Select the annual range of interest", 
-          sliderInput("yearsel1", "Month range", min = mos[1], max = mos[12], value = range(mos), timeFormat = '%b', width = '100%'))
+          sliderTextInput("yearsel1", "Month range", choices = mos, selected = mos[c(1, 12)], width = '100%', grid = T))
       }
       
       })
@@ -168,7 +169,7 @@ fillCol(flex = c(NA, NA, 1),
       sumsel2 <- as.logical(input$sumsel2)
       if(sumsel2){
         tags$div(title = "Select the annual range of interest", 
-          sliderInput("yearsel2", "Month range", min = mos[1], max = mos[12], value = range(mos), timeFormat = '%b', width = '100%'))
+          sliderTextInput("yearsel2", "Month range", choices = mos, selected = mos[c(1, 12)], width = '100%', grid = T))
       }
       
       })

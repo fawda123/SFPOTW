@@ -1,3 +1,5 @@
+# plotting function
+# raw data or summarized
 plo_fun <- function(seldat, sumsel, yearsel){
 
   req(seldat)
@@ -19,8 +21,18 @@ plo_fun <- function(seldat, sumsel, yearsel){
 
     req(yearsel)
 
+    validate(
+      need(length(unique(yearsel)) == 2, 'At least two months needed to summarize')
+    )
+
+    # month filter as numeric
+    tofilt <- factor(yearsel, levels = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'), labels = c(1:12)) %>%
+      as.numeric()
+
+    # xaxis range
+    xrng <- range(seldat$year)
+
     # summarize data
-    tofilt <- as.numeric(format(yearsel, '%m'))
     seldat <- seldat %>%
       filter(month >= tofilt[1] & month <= tofilt[2]) %>%
       summarise(
@@ -32,9 +44,6 @@ plo_fun <- function(seldat, sumsel, yearsel){
       mutate(
         ave = ifelse(is.na(lov), NA, ave)
       )
-
-    # xaxis range
-    xrng <- range(seldat$year)
 
     # plot
     p <- plotly::plot_ly(seldat, x = ~year, y = ~ave, type = 'scatter', mode = 'lines',
