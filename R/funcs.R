@@ -9,6 +9,7 @@ plo_fun <- function(seldat, sumsel, yearsel){
 
     # xaxis range
     xrng <- range(seldat$date)
+    ymax <- max(seldat$mag, na.rm = T)
 
     # plot
     p <- plotly::plot_ly(seldat, x = ~date, y = ~mag, type = 'scatter', mode = 'lines+markers',
@@ -45,6 +46,9 @@ plo_fun <- function(seldat, sumsel, yearsel){
         ave = ifelse(is.na(lov), NA, ave)
       )
 
+    # ymax
+    ymax <- max(seldat$hiv, na.rm = T)
+
     # plot
     p <- plotly::plot_ly(seldat, x = ~year, y = ~ave, type = 'scatter', mode = 'lines',
                          line = list(color = 'rgb(0, 174, 239)')) %>%
@@ -55,7 +59,7 @@ plo_fun <- function(seldat, sumsel, yearsel){
   p <- p %>%
     plotly::layout(
       xaxis = list(title = NA, range = xrng),
-      yaxis = list(title = 'Magnitude'),
+      yaxis = list(title = 'Magnitude', range = c(0, ymax)),
       showlegend = F
     )
 
