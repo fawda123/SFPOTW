@@ -1,6 +1,6 @@
 # plotting function
 # raw data or summarized
-plo_fun <- function(seldat, sumsel, yearsel, barsel){
+plo_fun <- function(seldat, sumsel, yearsel, barsel = F, colsin = NULL){
 
   req(seldat)
 
@@ -35,7 +35,7 @@ plo_fun <- function(seldat, sumsel, yearsel, barsel){
       ymax <- NA
 
       # plot
-      p <- plotly::plot_ly(seldat, x = ~date, y = ~mag, type = 'bar', color = ~POTW, colors = 'Set1')
+      p <- plotly::plot_ly(seldat, x = ~date, y = ~mag, type = 'bar', color = ~POTW, colors = colsin)
 
     }
 
@@ -97,7 +97,7 @@ plo_fun <- function(seldat, sumsel, yearsel, barsel){
       xrng <- xrng + c(-0.5, 0.5)
 
       # plot
-      p <- plotly::plot_ly(seldat, x = ~year, y = ~mag, type = 'bar', color = ~POTW, colors = 'Set1')
+      p <- plotly::plot_ly(seldat, x = ~year, y = ~mag, type = 'bar', color = ~POTW, colors = colsin)
 
     }
 

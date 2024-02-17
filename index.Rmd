@@ -28,6 +28,9 @@ subm <- sort(unique(loads$sub_name))
 
 # placeholder vector for monthly selection
 mos <- c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+
+# Set1 cols
+cols <- c('#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999')
 ```
 
 ```{r reactives}
@@ -52,7 +55,7 @@ potwplo <- reactive({
   sumsel1 <- as.logical(input$sumsel1)
   yearsel1 <- input$yearsel1
 
-  plo_fun(potwseldat, sumsel1, yearsel1, barsel = F)  
+  plo_fun(potwseldat, sumsel1, yearsel1)  
 
 })
 
@@ -72,17 +75,37 @@ submseldat <- reactive({
   
 })
 
+submbarcols <- reactive({
+  
+  # inputs
+  submsel1 <- input$submsel1
+  potwsel2 <- input$potwsel2
+  
+  req(potwsel2)
+  
+  unipotw <- sort(unique(subset(loads, sub_name == submsel1)$POTW))
+  
+  out <- colorRampPalette(cols)(length(unipotw))
+  names(out) <- unipotw
+  
+  out <- out[potwsel2]
+  
+  return(out)
+    
+})
+
 submplot <- reactive({
   
   # inputs
   submseldat <- submseldat()
+  submbarcols <- submbarcols()
   sumsel2 <- as.logical(input$sumsel2)
   yearsel2 <- input$yearsel2
   barsel2 <- as.logical(input$barsel2)
-  
+  subm
   req(!is.null(submseldat))
   
-  plo_fun(submseldat, sumsel2, yearsel2, barsel2)
+  plo_fun(submseldat, sumsel2, yearsel2, barsel2, submbarcols)
   
 })
 ```
