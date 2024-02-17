@@ -52,7 +52,7 @@ potwplo <- reactive({
   sumsel1 <- as.logical(input$sumsel1)
   yearsel1 <- input$yearsel1
 
-  plo_fun(potwseldat, sumsel1, yearsel1)  
+  plo_fun(potwseldat, sumsel1, yearsel1, barsel = F)  
 
 })
 
@@ -64,14 +64,9 @@ submseldat <- reactive({
   potwsel2 <- input$potwsel2
   paramsel2 <- input$paramsel2
   
-  validate(
-    need(potwsel2, 'Need at least one POTW'),
-  )
+  req(!is.null(potwsel2))
   
   out <- subset(loads, sub_name == submsel1 & param == paramsel2 & POTW %in% potwsel2)
-  out <- summarise(out, 
-                   mag = sum(mag, na.rm = T), 
-                   .by = c('month', 'year', 'date', 'param'))
   
   return(out)
   
@@ -83,8 +78,11 @@ submplot <- reactive({
   submseldat <- submseldat()
   sumsel2 <- as.logical(input$sumsel2)
   yearsel2 <- input$yearsel2
+  barsel2 <- as.logical(input$barsel2)
   
-  plo_fun(submseldat, sumsel2, yearsel2)
+  req(!is.null(submseldat))
+  
+  plo_fun(submseldat, sumsel2, yearsel2, barsel2)
   
 })
 ```
@@ -188,13 +186,19 @@ fillCol(flex = c(NA, NA, 1),
     )
   ),
   column(12,
-    column(2, tags$div(title = "Select yes/no to summarise data annually"), 
-      selectInput("sumsel2", "Summarise annually?", choices = c('Yes' = T, 'No' = F), selected = F, width = '100%')
+    column(4, tags$div(title = "Select yes/no to view data as stacked bar plot for each POTW", 
+      selectInput("barsel2", "Stacked bar plot?", choices = c('Yes' = T, 'No' = F), selected = F, width = '100%'))
+    ),
+    column(2, tags$div(title = "Select yes/no to summarise data annually", 
+          selectInput("sumsel2", "Summarise annually?", choices = c('Yes' = T, 'No' = F), selected = F, width = '100%'))
     ), 
     column(6, renderUI({
       
       # input
       sumsel2 <- as.logical(input$sumsel2)
+
+      req(length(sumsel2) == 1)
+      
       if(sumsel2){
         tags$div(title = "Select the annual range of interest", 
           sliderTextInput("yearsel2", "Month range", choices = mos, selected = mos[c(1, 12)], width = '100%', grid = T))
