@@ -3,7 +3,6 @@ title: "San Francisco Estuary POTW Data"
 output: 
   flexdashboard::flex_dashboard:
     social: menu
-    source_code: "https://github.com/fawda123/SFPOTW"
     logo: www/sfeilogo.png
 runtime: shiny
 css: styles.css
@@ -17,10 +16,12 @@ library(flexdashboard)
 library(shinyWidgets)
 library(shiny)
 library(dplyr)
+library(leaflet)
 
 source('R/funcs.R')
 
 load('data/loads.RData')
+load('data/locs.RData')
 
 param <- sort(unique(loads$param))
 potw <- sort(unique(loads$POTW))
@@ -34,6 +35,17 @@ cols <- c('#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a6
 ```
 
 ```{r reactives}
+# potw map
+potwmap <- reactive({
+  
+  out <- leaflet() %>%
+    addProviderTiles('CartoDB.Positron') %>%
+    addCircleMarkers(data = locs, lng = ~lon, lat = ~lat, radius = 5, color = 'black', fillOpacity = 0.8, popup = ~paste0('<b>POTW: </b>', POTW))
+  
+  return(out)
+  
+})
+
 # potw subset data
 potwseldat <- reactive({
   
@@ -59,7 +71,18 @@ potwplo <- reactive({
 
 })
 
-# submbayment subset data
+# subembayment map
+submmap <- reactive({
+  
+  out <- leaflet() %>%
+    addProviderTiles('CartoDB.Positron') %>%
+    addCircleMarkers(data = locs, lng = ~lon, lat = ~lat, radius = 5, color = 'black', fillOpacity = 0.8, popup = ~paste0('<b>POTW: </b>', POTW))
+  
+  return(out)
+  
+})
+
+# subembayment subset data
 submseldat <- reactive({
   
   # inputs
@@ -131,7 +154,7 @@ All of the plots are interactive and can be zoomed and panned.  The data used to
 
 #### Website information
 
-Questions and comments about the dashboard can be sent to [David Senn](mailto:davids@sfei.org) or [Marcus Beck](mailto:mbeck@tbep.org). The website source content can be viewed on [Github](https://github.com/fawda123/SFPOTW).
+Questions and comments about the dashboard can be sent to [David Senn](mailto:davids@sfei.org) or [Marcus Beck](mailto:mbeck@tbep.org).
 
 <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'><img alt='Creative Commons License' style='border-width:0' src='https://i.creativecommons.org/l/by/4.0/88x31.png' /></a>&nbsp;&nbsp;This website is licensed under a <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'>Creative Commons Attribution 4.0 International License</a>.
 
@@ -149,6 +172,7 @@ Column
 
 ```{r}
 output$potwplo <- plotly::renderPlotly(potwplo())
+output$potwmap <- renderLeaflet(potwmap())
 fillCol(flex = c(NA, NA, 1),
   column(12, 
     column(4, tags$div(title = "Select the POTW of interest", 
@@ -174,7 +198,10 @@ fillCol(flex = c(NA, NA, 1),
       })
     )
   ),
-  plotly::plotlyOutput("potwplo")
+  fillRow(flex = c(0.3, 0.7), 
+    leafletOutput('potwmap'),
+    plotly::plotlyOutput("potwplo")
+  )            
 )
 ```
 
@@ -188,6 +215,7 @@ Column
 
 ```{r}
 output$submplot <- plotly::renderPlotly(submplot())
+output$submmap <- renderLeaflet(submmap())
 fillCol(flex = c(NA, NA, 1), 
   column(12, 
     column(4, tags$div(title = "Select the sub-embayment of interest, POTW selection will be filtered accordingly", 
@@ -230,7 +258,10 @@ fillCol(flex = c(NA, NA, 1),
       })
     )
   ),
-  plotly::plotlyOutput("submplot")
+  fillRow(flex = c(0.3, 0.7), 
+    leafletOutput('submmap'),
+    plotly::plotlyOutput("submplot")
+  )
 )
 ```
 

@@ -5,6 +5,8 @@ library(ggplot2)
 library(lubridate)
 library(here)
 
+# POTW data -----------------------------------------------------------------------------------
+
 ##
 # code from DS
 
@@ -49,3 +51,14 @@ loads4 <- full_join(loads3, subs)
 # save output
 loads <- loads4
 save(loads, file = here('data/loads.RData'))
+
+# POTW locations ------------------------------------------------------------------------------
+
+locs <- read.csv(here('data-raw/POTW_locations.csv'), header = TRUE) |>
+  select(
+    POTW = "POTW.Name",
+    lat = "Latitude",
+    lon = "Longitude"
+  )
+
+save(locs, file = here('data/locs.RData'))
