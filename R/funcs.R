@@ -108,6 +108,7 @@ plo_fun <- function(seldat, sumsel, yearsel, barsel = F, colsin = NULL){
       xaxis = list(title = NA, range = xrng),
       yaxis = list(title = 'Magnitude', range = c(0, ymax)),
       showlegend = F,
+      margin = list(b = 0),
       barmode = 'stack'
     )
 

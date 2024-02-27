@@ -54,11 +54,53 @@ save(loads, file = here('data/loads.RData'))
 
 # POTW locations ------------------------------------------------------------------------------
 
+load(file = here('data/loads.RData'))
+
+# get potw names from loads to match with locs
+nms <- loads |>
+  select(POTW) |>
+  distinct()
+
+# import, manually fix or add
 locs <- read.csv(here('data-raw/POTW_locations.csv'), header = TRUE) |>
   select(
     POTW = "POTW.Name",
     lat = "Latitude",
     lon = "Longitude"
+  ) |>
+  mutate(
+    POTW = case_when(
+      POTW == 'DDSD' ~ 'Delta Diablo',
+      POTW == 'FSSD' ~ 'Fairfield-Suisun',
+      POTW == 'Mountain View' ~ 'Mt View',
+      POTW == 'Pinole/Hercules' ~ 'Pinole',
+      POTW == 'SFO' ~ 'SFO Airport',
+      POTW == 'SFPUC' ~ 'SFPUC Southeast Plant',
+      POTW == 'SJSC' ~ 'San Jose',
+      POTW == 'SSF-SB' ~ 'South SF',
+      POTW == 'W. County/Richmond' ~ 'West County',
+      T ~ POTW
+    )
+  ) %>%
+  left_join(nms, ., by = 'POTW') %>%
+  mutate(
+    lat = case_when(
+      POTW == 'Port Costa' ~ 38.06073,
+      POTW == 'Paradise Cove' ~ 37.90081,
+      POTW == 'Tiburon' ~ 37.86815,
+      POTW == 'SMCSD' ~ 37.84176,
+      POTW == 'SVCW' ~ 37.54503,
+      T ~ lat
+    ),
+    lon = case_when(
+      POTW == 'Port Costa' ~ -122.22524,
+      POTW == 'Paradise Cove' ~ -122.48236,
+      POTW == 'Tiburon' ~ -122.45139,
+      POTW == 'SMCSD' ~ -122.46750,
+      POTW == 'SVCW' ~ -122.23016,
+      T ~ lon
+    )
   )
+
 
 save(locs, file = here('data/locs.RData'))

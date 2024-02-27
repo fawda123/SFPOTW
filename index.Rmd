@@ -32,19 +32,36 @@ mos <- c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', '
 
 # Set1 cols
 cols <- c('#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999')
+
+# potw base map
+potwbasemap <- leaflet() %>%
+  addProviderTiles('CartoDB.Positron') %>% 
+  addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8) 
 ```
 
 ```{r reactives}
 # potw map
-potwmap <- reactive({
+potwmap1 <- leafletProxy('potwmap1')
+observeEvent(input$potwsel1, {
   
-  out <- leaflet() %>%
-    addProviderTiles('CartoDB.Positron') %>%
-    addCircleMarkers(data = locs, lng = ~lon, lat = ~lat, radius = 5, color = 'black', fillOpacity = 0.8, popup = ~paste0('<b>POTW: </b>', POTW))
+  # input
+  potwsel1 <- input$potwsel1
   
-  return(out)
+  potwmap1 <- potwmap1 %>%
+    removeMarker('selpotw') %>% 
+    addCircleMarkers(data = locs %>% filter(POTW == potwsel1), layerId = 'selpotw', lng = ~lon, lat = ~lat, radius = 6, color = 'red', stroke = F, fillOpacity = 0.8)
   
 })
+
+# potw map click
+observeEvent(input$potwmap1_marker_click, {
+
+  # input
+  potwsel1 <- input$potwmap1_marker_click$id
+
+  updateSelectInput(session, 'potwsel1', selected = potwsel1)
+  
+})  
 
 # potw subset data
 potwseldat <- reactive({
@@ -76,7 +93,7 @@ submmap <- reactive({
   
   out <- leaflet() %>%
     addProviderTiles('CartoDB.Positron') %>%
-    addCircleMarkers(data = locs, lng = ~lon, lat = ~lat, radius = 5, color = 'black', fillOpacity = 0.8, popup = ~paste0('<b>POTW: </b>', POTW))
+    addCircleMarkers(data = locs, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8, popup = ~paste0('<b>POTW: </b>', POTW))
   
   return(out)
   
@@ -133,6 +150,7 @@ submplot <- reactive({
 })
 ```
 
+
 OVERVIEW
 ===========================================================
 
@@ -172,7 +190,7 @@ Column
 
 ```{r}
 output$potwplo <- plotly::renderPlotly(potwplo())
-output$potwmap <- renderLeaflet(potwmap())
+output$potwmap1 <- renderLeaflet(potwbasemap)
 fillCol(flex = c(NA, NA, 1),
   column(12, 
     column(4, tags$div(title = "Select the POTW of interest", 
@@ -199,7 +217,7 @@ fillCol(flex = c(NA, NA, 1),
     )
   ),
   fillRow(flex = c(0.3, 0.7), 
-    leafletOutput('potwmap'),
+    leafletOutput('potwmap1'),
     plotly::plotlyOutput("potwplo")
   )            
 )
