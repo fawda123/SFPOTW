@@ -89,6 +89,8 @@ potwplo <- reactive({
   sumsel1 <- as.logical(input$sumsel1)
   yearsel1 <- input$yearsel1
 
+  req(nrow(potwseldat) > 0)
+  
   plo_fun(potwseldat, sumsel1, yearsel1)  
 
 })
@@ -167,7 +169,7 @@ submplot <- reactive({
   yearsel2 <- input$yearsel2
   barsel2 <- as.logical(input$barsel2)
 
-  req(!is.null(submseldat))
+  req(nrow(submseldat) > 0)
 
   plo_fun(submseldat, sumsel2, yearsel2, barsel2, submbarcols)
   
