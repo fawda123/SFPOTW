@@ -58,7 +58,7 @@ load(file = here('data/loads.RData'))
 
 # get potw names from loads to match with locs
 nms <- loads |>
-  select(POTW) |>
+  select(POTW, sub_name) |>
   distinct()
 
 # import, manually fix or add
@@ -101,6 +101,5 @@ locs <- read.csv(here('data-raw/POTW_locations.csv'), header = TRUE) |>
       T ~ lon
     )
   )
-
 
 save(locs, file = here('data/locs.RData'))
