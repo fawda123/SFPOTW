@@ -57,17 +57,17 @@ save(loads, file = here('data/loads.RData'))
 load(file = here('data/loads.RData'))
 
 # get potw names from loads to match with locs
-nms <- loads |>
-  select(POTW, sub_name) |>
+nms <- loads %>%
+  select(POTW, sub_name) %>%
   distinct()
 
 # import, manually fix or add
-locs <- read.csv(here('data-raw/POTW_locations.csv'), header = TRUE) |>
+locs <- read.csv(here('data-raw/POTW_locations.csv'), header = TRUE) %>%
   select(
     POTW = "POTW.Name",
     lat = "Latitude",
     lon = "Longitude"
-  ) |>
+  ) %>%
   mutate(
     POTW = case_when(
       POTW == 'DDSD' ~ 'Delta Diablo',

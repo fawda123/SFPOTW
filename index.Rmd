@@ -33,14 +33,10 @@ mos <- c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', '
 # Set1 cols
 cols <- c('#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999')
 
-# potw base map
-basemap1 <- leaflet() %>%
+# base map
+basemap <- leaflet() %>%
   addProviderTiles('CartoDB.Positron') %>% 
   addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8)
-# subembayment base map
-basemap2 <- leaflet() %>%
-  addProviderTiles('CartoDB.Positron') %>% 
-  addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8) 
 ```
 
 ```{r reactives}
@@ -106,7 +102,7 @@ observeEvent(input$potwsel2, {
 
   submmap1 <- submmap1 %>%
     clearMarkers() %>% 
-    addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8) |>  
+    addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8) %>%  
     addCircleMarkers(data = locs %>% filter(POTW %in% potwsel2), lng = ~lon, lat = ~lat, radius = 6, color = 'red', stroke = F, fillOpacity = 0.8)
   
 })
@@ -216,7 +212,7 @@ Column
 
 ```{r}
 output$potwplo <- plotly::renderPlotly(potwplo())
-output$potwmap1 <- renderLeaflet(basemap1)
+output$potwmap1 <- renderLeaflet(basemap)
 fillCol(flex = c(NA, NA, 1),
   column(12, 
     column(4, tags$div(title = "Select the POTW of interest", 
@@ -259,7 +255,7 @@ Column
 
 ```{r}
 output$submplot <- plotly::renderPlotly(submplot())
-output$submmap1 <- renderLeaflet(basemap2)
+output$submmap1 <- renderLeaflet(basemap)
 fillCol(flex = c(NA, NA, 1), 
   column(12, 
     column(4, tags$div(title = "Select the sub-embayment of interest, POTW selection will be filtered accordingly", 
