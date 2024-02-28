@@ -170,7 +170,7 @@ submplot <- reactive({
   plo_fun(submseldat, sumsel2, yearsel2, barsel2, submbarcols)
   
 })
-enableBookmarking("url")
+# enableBookmarking("url")
 ```
 
 
@@ -193,13 +193,13 @@ This dashboard provides a quick summary of load estimates for publicly-owned tre
 
 All of the plots are interactive and can be zoomed and panned.  The data used to generate the plots can be downloaded by clicking the "Download" button in the upper right corner of each plot.
 
-#### Bookmark button
+<!-- #### Bookmark button -->
 
-Click this button to save a unique URL for your selections:
+<!-- Click this button to save a unique URL for your selections: -->
 
-```{r}
-bookmarkButton()
-```
+<!-- ```{r} -->
+<!-- bookmarkButton() -->
+<!-- ``` -->
 
 #### Website information
 
