@@ -51,7 +51,8 @@ plo_fun <- function(seldat, sumsel, yearsel, barsel = F, colsin = NULL){
     )
 
     # month filter as numeric
-    tofilt <- factor(yearsel, levels = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'), labels = c(1:12)) %>%
+    mos <- c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+    tofilt <- factor(yearsel, levels = mos, labels = c(1:12)) %>%
       as.numeric()
 
     # xaxis range
@@ -60,6 +61,16 @@ plo_fun <- function(seldat, sumsel, yearsel, barsel = F, colsin = NULL){
     # summarize data
     seldat <- seldat %>%
       filter(month >= tofilt[1] & month <= tofilt[2])
+
+    # remove start and end years if doesn't contain number of months in tofilt
+    torm <- seldat %>%
+      summarise(
+        n = n_distinct(month),
+        .by = year
+      )
+    minmo <- length(seq(tofilt[1], tofilt[2]))
+    seldat <- seldat %>%
+      filter(!year %in% torm$year[which(torm$n != minmo)])
 
     if(!barsel){
 
