@@ -268,7 +268,7 @@ output$submmap1 <- renderLeaflet(basemap)
 fillCol(flex = c(NA, NA, 1), 
   column(12, 
     column(4, tags$div(title = "Select the sub-embayment of interest, POTW selection will be filtered accordingly", 
-      selectInput("submsel1", "Sub-embayment", choices = subm, width = '100%'))
+      selectInput("submsel1", "Sub-embayment", choices = subm, selected = 'South Bay', width = '100%'))
     ),
     column(4, renderUI({
       
@@ -287,7 +287,7 @@ fillCol(flex = c(NA, NA, 1),
   ),
   column(12,
     column(4, tags$div(title = "Select yes/no to view data as stacked bar plot for each POTW", 
-      selectInput("barsel2", "Stacked bar plot?", choices = c('Yes' = T, 'No' = F), selected = F, width = '100%'))
+      selectInput("barsel2", "Stacked bar plot?", choices = c('Yes' = T, 'No' = F), selected = T, width = '100%'))
     ),
     column(2, tags$div(title = "Select yes/no to summarise data annually", 
           selectInput("sumsel2", "Summarise annually?", choices = c('Yes' = T, 'No' = F), selected = F, width = '100%'))
