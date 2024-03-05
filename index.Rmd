@@ -186,7 +186,9 @@ Column {.tabset .tabset-fade data-width=650}
 
 #### WELCOME TO THE POTW DASHBOARD
 
-This dashboard provides a quick summary of load estimates for publicly-owned treatment works (POTWs) that discharge to the San Francisco Estuary.  The dashboard is organized into two main sections:
+In 2012, the San Francisco Bay Water Board (Water Board) began requiring comprehensive nutrient monitoring in effluent from all publicly-owned treatment works (POTWs) that discharge to San Francisco Bay. The Bay Area Clean Water Agencies (BACWA), working with HDR, have been compiling that data and producing annual reports tracking nutrient loads over time, by region, and by individual POTW.  The graphics presented here use that data, which can be found [here](https://bacwa.org/document-category/nutrient-annual-reports/){target="_blank}.
+
+This dashboard provides a quick summary of data from POTWs that discharge to the San Francisco Estuary.  The dashboard is organized into two main sections:
 
 1) [__BY POTW__](#by-potw): View results for individual POTWs.  This page shows time series of monthly load estimates for each POTW.  The user can select the POTW and parameter of interest, and choose to summarize data annually.  The annual summaries show the average loads (+/-95% confidence interval) for the selected monthly range for each year. The plot will update based on the user's selection.
 1) [__BY SUBEMBAYMENT__](#by-subembayment): View results for all POTWs that discharge each subembayment.  This page shows time series of monthly load estimates for each subembayment.  The user can select the subembayment, POTWs within the subembayment, and parameter of interest, and choose to summarize data annually.  The annual summaries show the average loads (+/-95% confidence interval) for the selected monthly range for each year. One to all of the POTWs that drain to each subembayment can be selected. The plot will update based on the user's selection.
@@ -206,6 +208,10 @@ All of the plots are interactive and can be zoomed and panned.  The data used to
 Questions and comments about the dashboard can be sent to [David Senn](mailto:davids@sfei.org) or [Marcus Beck](mailto:mbeck@tbep.org).
 
 <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'><img alt='Creative Commons License' style='border-width:0' src='https://i.creativecommons.org/l/by/4.0/88x31.png' /></a>&nbsp;&nbsp;This website is licensed under a <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'>Creative Commons Attribution 4.0 International License</a>.
+
+```{r, height = 200, fig.align = "center"}
+knitr:::include_graphics("www/logocomb.png")
+```
 
 </div>
 <div class = "col-md-2"></div>
