@@ -99,7 +99,7 @@ plo_fun <- function(seldat, sumsel, yearsel, barsel = F, colsin = NULL){
 
       seldat <- seldat %>%
         summarise(
-          mag = sum(mag, na.rm = T),
+          mag = mean(mag, na.rm = T),
           .by = c('year', 'POTW')
         )
 
