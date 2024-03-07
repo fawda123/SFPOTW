@@ -170,9 +170,7 @@ submplot <- reactive({
   plo_fun(submseldat, sumsel2, yearsel2, barsel2, submbarcols)
   
 })
-# enableBookmarking("url")
 ```
-
 
 OVERVIEW
 ===========================================================
@@ -194,14 +192,6 @@ This dashboard provides a quick summary of data from POTWs that discharge to San
 1) [__BY SUBEMBAYMENT__](#by-subembayment): View results for all POTWs that discharge to each subembayment.  This page shows time series of monthly or annual load estimates for each subembayment.  The user can select the subembayment, POTWs within the subembayment, and parameter of interest.  The annual summaries show the average loads (+/-95% confidence interval) for the selected monthly range for each year. 
 
 All of the plots are interactive and can be zoomed and panned.  The data used to generate the plots can be downloaded by clicking the "Download" button in the upper right corner of each plot.
-
-<!-- #### Bookmark button -->
-
-<!-- Click this button to save a unique URL for your selections: -->
-
-<!-- ```{r} -->
-<!-- bookmarkButton() -->
-<!-- ``` -->
 
 #### Website information
 
