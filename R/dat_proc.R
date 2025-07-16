@@ -50,6 +50,34 @@ loads4 <- full_join(loads3, subs)
 
 # save output
 loads <- loads4
+
+sheet_names <- excel_sheets(here('data-raw/loads_sheet.xlsx'))
+
+
+potwlist<-data.frame(month=NA,year=NA,date=NA,param=NA,mag=NA,POTW=NA)
+for (i in sheet_names){
+  place<-read_xlsx(here('data-raw/loads_sheet.xlsx'),
+                   sheet=i,
+                   col_types = c("date","numeric","numeric","numeric","numeric","numeric"))%>%
+    set_names(c("ugh","Flow (mg/d)","NH4 (kg/d)","NOX (kg/d)","DIN (kg/d)","TP (kg/d)"))%>%
+    mutate(ugh = as.character(ugh))%>%
+    separate(ugh,into=c("badyr","month","year"),sep="-")%>%
+    mutate(month=as.numeric(month),
+           year=as.numeric(paste0("20",year)),
+           date=as_date(ymd(paste0(year,"-",month,"-","1"))))%>%
+    filter(!is.na(date))%>%
+    select(-badyr)%>%
+    pivot_longer(cols=3:7,names_to = "param",values_to = "mag")%>%
+    mutate(POTW = i)
+  potwlist<-bind_rows(potwlist,place)
+}
+potwlist<-potwlist%>%
+  filter(!is.na(date),
+         between(date,as_date("2022-10-01"),as_date("2025-10-01")))%>%
+  left_join(subs)
+
+loads<-bind_rows(loads,potwlist)%>%
+  arrange(date)
 save(loads, file = here('data/loads.RData'))
 
 # POTW locations ------------------------------------------------------------------------------
