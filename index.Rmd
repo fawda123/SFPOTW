@@ -132,6 +132,10 @@ submseldat <- reactive({
   
   req(!is.null(potwsel2))
   
+  if(submsel1 == 'All Subembayments'){
+    submsel1 <- sort(unique(loads$sub_name))
+  }
+
   out <- subset(loads, sub_name == submsel1 & param == paramsel2 & POTW %in% potwsel2)
   
   return(out)
@@ -146,6 +150,10 @@ submbarcols <- reactive({
   potwsel2 <- input$potwsel2
   
   req(potwsel2)
+  
+  if(submsel1 == 'All Subembayments'){
+    submsel1 <- sort(unique(loads$sub_name))
+  }
   
   unipotw <- sort(unique(subset(loads, sub_name == submsel1)$POTW))
   
@@ -269,15 +277,20 @@ output$submmap1 <- renderLeaflet(basemap)
 fillCol(flex = c(NA, NA, 1), 
   column(12, 
     column(4, tags$div(title = "Select the sub-embayment of interest, POTW selection will be filtered accordingly", 
-      selectInput("submsel1", "Sub-embayment", choices = subm, selected = 'South Bay', width = '100%'))
+      selectInput("submsel1", "Sub-embayment", choices = c(subm, 'All Subembayments'), selected = 'South Bay', width = '100%'))
     ),
     column(4, renderUI({
       
-           # input
-           submsel1 <- input$submsel1
-           tosel <- sort(unique(subset(loads, sub_name == submsel1)$POTW))
-           
-           tags$div(title = "Select the POTWs of interest, remove a POTW by clicking and hitting backspace",
+          # input
+          submsel1 <- input$submsel1
+
+          if(submsel1 == 'All Subembayments'){
+            tosel <- sort(unique(loads$POTW))
+          } else {
+            tosel <- sort(unique(subset(loads, sub_name == submsel1)$POTW))
+          }
+            
+          tags$div(title = "Select the POTWs of interest, remove a POTW by clicking and hitting backspace",
               selectInput("potwsel2", "POTW", choices = tosel, width = '100%', multiple = T, selected = tosel)
            )
            
