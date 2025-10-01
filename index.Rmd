@@ -23,6 +23,9 @@ source('R/funcs.R')
 load('data/loads.RData')
 load('data/locs.RData')
 
+# Replace all "DIN (kg/d)" with "TIN (kg/d)" in the param column
+loads$param[loads$param == "DIN (kg/d)"] <- "TIN (kg/d)"
+
 param <- sort(unique(loads$param))
 potw <- sort(unique(loads$POTW))
 subm <- sort(unique(loads$sub_name))
