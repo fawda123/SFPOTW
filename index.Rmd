@@ -39,7 +39,7 @@ cols <- c('#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a6
 # base map
 basemap <- leaflet() %>%
   addProviderTiles('CartoDB.Positron') %>% 
-  addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8)
+  addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8, label = ~paste0('POTW: ', POTW))
 ```
 
 ```{r reactives}
@@ -52,7 +52,7 @@ observeEvent(input$potwsel1, {
   
   potwmap1 <- potwmap1 %>%
     removeMarker('selpotw') %>% 
-    addCircleMarkers(data = locs %>% filter(POTW == potwsel1), layerId = 'selpotw', lng = ~lon, lat = ~lat, radius = 6, color = 'red', stroke = F, fillOpacity = 0.8)
+    addCircleMarkers(data = locs %>% filter(POTW == potwsel1), layerId = 'selpotw', lng = ~lon, lat = ~lat, radius = 6, color = 'red', stroke = F, fillOpacity = 0.8, label = ~paste0('POTW: ', POTW))
   
 })
 
@@ -105,8 +105,8 @@ observeEvent(input$potwsel2, {
 
   submmap1 <- submmap1 %>%
     clearMarkers() %>% 
-    addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8) %>%  
-    addCircleMarkers(data = locs %>% filter(POTW %in% potwsel2), lng = ~lon, lat = ~lat, radius = 6, color = 'red', stroke = F, fillOpacity = 0.8)
+    addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8, label = ~paste0('POTW: ', POTW, '\nSubembayment: ', sub_name), labelOptions = leaflet::labelOptions(style = list("white-space" = "pre"))) %>%  
+    addCircleMarkers(data = locs %>% filter(POTW %in% potwsel2), lng = ~lon, lat = ~lat, radius = 6, color = 'red', stroke = F, fillOpacity = 0.8, label = ~paste0('POTW: ', POTW, '\nSubembayment: ', sub_name), labelOptions = leaflet::labelOptions(style = list("white-space" = "pre")))
   
 })
 
@@ -154,7 +154,7 @@ submbarcols <- reactive({
   if(submsel1 == 'All Subembayments'){
     submsel1 <- sort(unique(loads$sub_name))
   }
-  
+
   unipotw <- sort(unique(subset(loads, sub_name == submsel1)$POTW))
   
   out <- colorRampPalette(cols)(length(unipotw))
