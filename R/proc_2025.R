@@ -12,4 +12,4 @@ dat25<-read_xlsx(here('data-raw','GAR_output_data_blended (Discharge Data only, 
   select(-c(index,Location,Parameter,Unit))%>%
   set_names("year","month","POTW","mag","sub_name","date","param")
 
-save(dat25,file=here('data','loads25.rData'))
+save(dat25,file=here('data','loads25.RData'))
