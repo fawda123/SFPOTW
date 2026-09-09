@@ -20,9 +20,10 @@ library(leaflet)
 
 source('R/funcs.R')
 
-load('data/loads.RData')
+load('data/loads25.RData')
 load('data/locs.RData')
 
+loads<-dat25
 # Replace all "DIN (kg/d)" with "TIN (kg/d)" in the param column
 loads$param[loads$param == "DIN (kg/d)"] <- "TIN (kg/d)"
 
