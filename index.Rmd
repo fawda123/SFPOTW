@@ -38,7 +38,7 @@ cols <- c('#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a6
 
 # base map
 basemap <- leaflet() %>%
-  addProviderTiles('CartoDB.Positron') %>% 
+  addProviderTiles('Esri.WorldGrayCanvas') %>% 
   addCircleMarkers(data = locs, layerId = ~POTW, lng = ~lon, lat = ~lat, radius = 5, color = 'black', stroke = F, fillOpacity = 0.8, label = ~paste0('POTW: ', POTW))
 ```
 
